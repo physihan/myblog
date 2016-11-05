@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://physihan.github.io/"/>
-  <updated>2016-11-03T11:02:50.340Z</updated>
+  <updated>2016-11-05T02:18:39.796Z</updated>
   <id>http://physihan.github.io/</id>
   
   <author>
@@ -16,13 +16,35 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>网页排版不得不提的BFC</title>
+    <link href="http://physihan.github.io/2016/11/05/%E7%BD%91%E9%A1%B5%E6%8E%92%E7%89%88%E4%B8%8D%E5%BE%97%E4%B8%8D%E6%8F%90%E7%9A%84BFC/"/>
+    <id>http://physihan.github.io/2016/11/05/网页排版不得不提的BFC/</id>
+    <published>2016-11-05T02:18:39.000Z</published>
+    <updated>2016-11-05T02:18:39.796Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>My New Post</title>
     <link href="http://physihan.github.io/2016/11/03/My-New-Post/"/>
     <id>http://physihan.github.io/2016/11/03/My-New-Post/</id>
     <published>2016-11-03T11:02:50.000Z</published>
-    <updated>2016-11-03T11:02:50.340Z</updated>
+    <updated>2016-11-05T06:22:37.025Z</updated>
+    
+    <content type="html"><![CDATA[<p>每一个好的前端，都会有一个拿得出手的项目，对于我们刚刚学习前端没多久的新人而言，把自己所学的东西通过写博客的方式记录下来是一个很好的方式，一来可以即学即用，巩固自己的理解，二来可以记录生活，方便以后去回顾。</p>
+<p>那么，如何去创建一个自己的博客呢，这个其实很简单啊，很多网站都有博客板块，去注册了就能去写了，但是这种方式并不是十分geek，我们如果对自己的博客页面的个性化程度要求很高的话，那就得去自己动手去做一个博客了。</p>
+<p>这里我使用的是github提供的<a href="https://pages.github.com/" target="_blank" rel="external">github pages</a>服务，对于小型博客群众是非常方便的，当然你首先得有一个github账号，这里怎么注册就不多说了，</p>
+]]></content>
     
     <summary type="html">
+    
+      &lt;p&gt;每一个好的前端，都会有一个拿得出手的项目，对于我们刚刚学习前端没多久的新人而言，把自己所学的东西通过写博客的方式记录下来是一个很好的方式，一来可以即学即用，巩固自己的理解，二来可以记录生活，方便以后去回顾。&lt;/p&gt;
+&lt;p&gt;那么，如何去创建一个自己的博客呢，这个其实很简单啊，
     
     </summary>
     
