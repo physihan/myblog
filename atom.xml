@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://physihan.github.io/"/>
-  <updated>2016-11-05T02:18:39.796Z</updated>
+  <updated>2016-11-07T02:31:13.889Z</updated>
   <id>http://physihan.github.io/</id>
   
   <author>
@@ -14,6 +14,60 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>客户端存储</title>
+    <link href="http://physihan.github.io/2016/11/07/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AD%98%E5%82%A8/"/>
+    <id>http://physihan.github.io/2016/11/07/客户端存储/</id>
+    <published>2016-11-07T02:30:14.000Z</published>
+    <updated>2016-11-07T02:31:13.889Z</updated>
+    
+    <content type="html"><![CDATA[<p>使用客户端存储实现存储用户的偏好和状态信息</p>
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>在制作网页app时，为了更好地去提升客户的使用体验，需要去保存客户的一些信息，比如用户登陆的时候输入的密码、用户喜欢的页面风格啊（很多都是存在服务器上的），由于客户端存储遵循着<strong>同源策略</strong>，不同站点的页面是不可以相互读取数据，但是同一站点的不同页面之间是可以进行数据通信的，这样前一个页面的表单数据就可以在另一个页面显示了。</p>
+<p>作为web应用开发者，使用这些客户端存储技术是为了更好提升用户体验，如果是要开发需要迫不得已将隐私数据存在客户端机器上，要设置数据的有效期，这个数据可以保留至当前窗口关闭之前，或者是浏览器关闭之前。客户端存储的数据甚至是可以长期存在，也可以永久保存，要正确使用这个功能，不能给用户留下隐患。</p>
+<p>常见的客户端存储分为以下这几种</p>
+<ul>
+<li>Web存储</li>
+<li>cookie</li>
+<li>IE User Data</li>
+<li>离线web应用</li>
+<li>Web数据库</li>
+<li>文件系统API<h3 id="Web存储"><a href="#Web存储" class="headerlink" title="Web存储"></a>Web存储</h3>随着html5的广泛应用，Web存储这种形式在支持html5的浏览器中都可以去使用，所谓的Web存储，就是在浏览器的window对象上定义了两个对象属性，他俩的区别就在于存储的有效期不同，使用方式基本一致，<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">sessionStorage.x=5;</div><div class="line">sessionStorage.y=&quot;hello web storage&quot;</div><div class="line">sessionStorage.z=&#123;</div><div class="line">name:&quot;sessionStorage&quot;,</div><div class="line">say:function()&#123;</div><div class="line">alert(&quot;hello&quot;)</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">console.log(sessionStorage)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>就把他当成一个对象用就好了,可惜的是<strong>目前还不支持对象和数组类型的数据存储</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Storage &#123;x: &quot;5&quot;, y: &quot;hello web storage&quot;, z: &quot;[object Object]&quot;, length: 3&#125;</div></pre></td></tr></table></figure></p>
+<p>sessionStorage和localStorage的作用域是同源的，一个网页的文档源是很严格的，同源要求url的协议、主机名、端口号都一致。<br>下面这些都是不同的源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">http://www.example.com            //协议http；主机名www.example.com</div><div class="line">https://www.exsample.com          //不同协议</div><div class="line">http://static.example.com         //不同主机名</div><div class="line">http://www.example.com:8000       //不同端口</div></pre></td></tr></table></figure></p>
+<p>在同一个源的sessionStorage和localStorage是相同的，sessionStorage的有效期和这个标签页或者这个页面的顶层窗口是一致的，而localStorage的数据是永久存储在本地的，除非通过浏览器刻意的去删除。这两个对象还提供了存储和查询的API<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">localStorage.setItem(<span class="string">"x"</span>,<span class="number">1</span>);  <span class="comment">//这里的是逗号分隔的两个参数，以x为名存储一个数值</span></div><div class="line">localStorage.getItem(<span class="string">"x"</span>);    <span class="comment">//获取值</span></div><div class="line">localStorage.key(<span class="number">0</span>);          <span class="comment">//第一个名值对的名字</span></div><div class="line">localStorage.clear();         <span class="comment">//清除所有存储的数据</span></div></pre></td></tr></table></figure></p>
+<h3 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h3><p>对于不能使用Web存储的浏览器，cookie也是一个很好的选择，因为它提出的很早，现在几乎所有浏览器都支持使用cookie，常见的使用cookie的地方就是定向广告，比如百度会根据你平时的搜索内容设置成cookie存在你的电脑上，在有些网站的广告栏会根据你的喜好投入广告（其实这样会泄露隐私的。。），可以在浏览器中清除cookie，这样还是有广告，但是已经不是没有个性化广告了哈哈。</p>
+<p>和前面所说的Web存储差不多，cookie的作用域是通过文档源和文档路径来确定的，默认情况下，如果不去设置cookie的path和domain属性，那么只有同在一个目录或者这个目录的子目录可见<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">http://www.xxxx.com/yyy                 //在这个页面设置的cookie，未设置path和domain</div><div class="line">http://www.xxxx.com/yyy                 //同目录可以访问</div><div class="line">http://www.xxxx.com/yyy/zzz             //子目录可以访问</div><div class="line">http://www.xxxx.com/yyy/aaa             //子目录可以访问</div><div class="line">http://www.xxxx.com/yyy/zzz/asd         //子目录可以访问</div><div class="line">http://www.xxxx.com/xxx                 //不可访问</div></pre></td></tr></table></figure></p>
+<p>下面来说说如何去设置cookie的path和domain属性，path就是文件路径，是上面<code>www.xxxx.com</code>后面的部分,在任何一个路径下设置cookie，如果path设置为<code>/yyy</code>，那么只有<code>/yyy</code>及以下目录可以访问，设置为<code>/</code>就是这个<code>www.xxxx.com</code>域名下的所有目录都可以访问，这就和localStorage和sessionStorage的作用域一样了，除此之外还可以设置domain属性，设置成<code>.xxxx.com</code>,再设置path为<code>/</code>,那就对所有<code>.xxxx.com</code>的子域都有访问权限了。</p>
+<p>cookie作为document对象的一个属性，它存储的是一串字符串，以<code>;</code>分隔开，<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.cookie = <span class="string">"name=oeschger"</span>;</div><div class="line"><span class="built_in">document</span>.cookie = <span class="string">"favorite_food=tripe"</span>;</div><div class="line">alert(<span class="built_in">document</span>.cookie);</div><div class="line"><span class="comment">// 显示: name=oeschger;favorite_food=tripe</span></div></pre></td></tr></table></figure></p>
+<p>cookie的使用特别麻烦，需要处理这些字符串，一般都会封装成函数去保存和读取这些cookie，下面是摘自<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie的封装" target="_blank" rel="external">https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie的封装</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">/*\</div><div class="line">|*|</div><div class="line">|*|  :: cookies.js ::</div><div class="line">|*|</div><div class="line">|*|  A complete cookies reader/writer framework with full unicode support.</div><div class="line">|*|</div><div class="line">|*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie</div><div class="line">|*|</div><div class="line">|*|  This framework is released under the GNU Public License, version 3 or later.</div><div class="line">|*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html</div><div class="line">|*|</div><div class="line">|*|  Syntaxes:</div><div class="line">|*|</div><div class="line">|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])</div><div class="line">|*|  * docCookies.getItem(name)</div><div class="line">|*|  * docCookies.removeItem(name[, path], domain)</div><div class="line">|*|  * docCookies.hasItem(name)</div><div class="line">|*|  * docCookies.keys()</div><div class="line">|*|</div><div class="line">\*/</div><div class="line"></div><div class="line">var docCookies = &#123;</div><div class="line">  getItem: function (sKey) &#123;</div><div class="line">    return decodeURIComponent(document.cookie.replace(new RegExp(&quot;(?:(?:^|.*;)\\s*&quot; + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, &quot;\\$&amp;&quot;) + &quot;\\s*\\=\\s*([^;]*).*$)|^.*$&quot;), &quot;$1&quot;)) || null;</div><div class="line">  &#125;,</div><div class="line">  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) &#123;</div><div class="line">    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) &#123; return false; &#125;</div><div class="line">    var sExpires = &quot;&quot;;</div><div class="line">    if (vEnd) &#123;</div><div class="line">      switch (vEnd.constructor) &#123;</div><div class="line">        case Number:</div><div class="line">          sExpires = vEnd === Infinity ? &quot;; expires=Fri, 31 Dec 9999 23:59:59 GMT&quot; : &quot;; max-age=&quot; + vEnd;</div><div class="line">          break;</div><div class="line">        case String:</div><div class="line">          sExpires = &quot;; expires=&quot; + vEnd;</div><div class="line">          break;</div><div class="line">        case Date:</div><div class="line">          sExpires = &quot;; expires=&quot; + vEnd.toUTCString();</div><div class="line">          break;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    document.cookie = encodeURIComponent(sKey) + &quot;=&quot; + encodeURIComponent(sValue) + sExpires + (sDomain ? &quot;; domain=&quot; + sDomain : &quot;&quot;) + (sPath ? &quot;; path=&quot; + sPath : &quot;&quot;) + (bSecure ? &quot;; secure&quot; : &quot;&quot;);</div><div class="line">    return true;</div><div class="line">  &#125;,</div><div class="line">  removeItem: function (sKey, sPath, sDomain) &#123;</div><div class="line">    if (!sKey || !this.hasItem(sKey)) &#123; return false; &#125;</div><div class="line">    document.cookie = encodeURIComponent(sKey) + &quot;=; expires=Thu, 01 Jan 1970 00:00:00 GMT&quot; + ( sDomain ? &quot;; domain=&quot; + sDomain : &quot;&quot;) + ( sPath ? &quot;; path=&quot; + sPath : &quot;&quot;);</div><div class="line">    return true;</div><div class="line">  &#125;,</div><div class="line">  hasItem: function (sKey) &#123;</div><div class="line">    return (new RegExp(&quot;(?:^|;\\s*)&quot; + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, &quot;\\$&amp;&quot;) + &quot;\\s*\\=&quot;)).test(document.cookie);</div><div class="line">  &#125;,</div><div class="line">  keys: /* optional method: you can safely remove it! */ function () &#123;</div><div class="line">    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, &quot;&quot;).split(/\s*(?:\=[^;]*)?;\s*/);</div><div class="line">    for (var nIdx = 0; nIdx &lt; aKeys.length; nIdx++) &#123; aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); &#125;</div><div class="line">    return aKeys;</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;使用客户端存储实现存储用户的偏好和状态信息&lt;/p&gt;
+&lt;h2 id=&quot;需求&quot;&gt;&lt;a href=&quot;#需求&quot; class=&quot;headerlink&quot; title=&quot;需求&quot;&gt;&lt;/a&gt;需求&lt;/h2&gt;&lt;p&gt;在制作网页app时，为了更好地去提升客户的使用体验，需要去保存客户的一些信息，比如
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>kindle资源</title>
+    <link href="http://physihan.github.io/2016/11/05/kindle%E8%B5%84%E6%BA%90/"/>
+    <id>http://physihan.github.io/2016/11/05/kindle资源/</id>
+    <published>2016-11-05T06:47:39.000Z</published>
+    <updated>2016-11-05T06:47:39.789Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>网页排版不得不提的BFC</title>
